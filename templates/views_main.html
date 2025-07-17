@@ -1,0 +1,39 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block head %}
+<title>Table data view</title>
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/views.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/form.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/default.css">
+{% endblock %}
+
+{% block body %}
+<div class="pageCorrection">
+  <table class="View_table">
+  {% for key in display %}
+  <tbody name="user-{{key}}">
+    <tr><td style="font-size: 15px; font-weight: 900; width: 100%; background: black;">{{key | replace("user"," user")}}</td></tr>
+      {% for value in display[key] %}
+      <tr>
+        <td>
+          <a href="/view/#{{value}}" data-vview="{{value}}" style="color:white"> {{value.replace("and", "&").replace("'", "")}}</a>
+        </td>
+      </tr>
+      {% endfor%}
+  </tbody>
+  {% endfor %}
+  </table>
+</div>
+{% endblock %}
+
+{% block jscript %}
+<script>
+  $("[data-view]").click(function() {
+    // alert($(this).data('view'));
+ //getView($(this).data('view'))
+  });
+</script>
+{% endblock %}

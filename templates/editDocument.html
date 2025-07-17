@@ -1,0 +1,52 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block stylesheet %}
+{% endblock %}
+
+{% block head %}
+<title>Edit Document or Subdocument</title>
+{% endblock %}
+
+{% block body %}
+<div class="background" id="disPlay"> <span class="fa fa-spinner fa-spin icon personal-style-spin"></span>  </div>
+<div class="pageCorrection">
+    <div class="input-fields" style="border: 1px solid white; text-align: center;">
+        <div class="chosen-selects">
+            <label style="font-size: 1.2em; min-width: 200px;">Document Type:</label>
+            <select id="doc-type" style="min-width: 300px; margin: 3% 0 3% 5px;"><option>-- select a document type --</option></select>
+            <br>
+            <label style="font-size: 1.2em; min-width: 200px;">Column Name:</label>
+            <select id="column-name" style="min-width: 300px;"><option>-- select column name --</option></select>
+        </div>
+        <div class="new-value" style="padding: 3%">
+                <label style="font-size: 1.2em; min-width: 200px;">Input new value:</label>
+            <input id="new-value-input" placeholder="New value" style="min-width: 300px;">
+        </div>
+    </div>
+    <div class="which-names-change" style="display: flex;">
+        <div class="left-side" id="il-style">
+            <div id="chose-column-names" style="overflow-y: scroll; max-height: 500px;">
+
+            </div>
+        </div>
+        <div class="right-side-with-select"  id="il-style">
+            <div id="chose-value-in-select" style="display: grid;">
+
+            </div>
+        </div>
+    </div>
+    <div class="row float-right" style="width:10%">
+      <button class="btn btn-success" id="check-changes" style="margin: 10px 5px 0 5px;">Check</button>
+      <button class="btn btn-primary" id="save-changes" style="margin: 10px 5px 0 5px;">Save</button>
+    </div>
+</div>
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+
+
+{% block jscript %}
+<script src="/static/js/editDocument.js" type="text/javascript"></script>
+{% endblock %}

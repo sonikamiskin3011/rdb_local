@@ -1,0 +1,119 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block head %}
+<title>Edit table data</title>
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/tables.css">
+{% endblock %}
+
+{% block body %}
+<div style="margin-right: 2%; margin-left: 2%"  class="pageCorrection">
+    <form action="" method="post">
+        <!-- Nav bars with the table options and log -->
+        <ul class="nav nav-tabs" id="table-tabs" role="tablist">
+            {% for table in db2_map %}
+                <li class="nav-item">
+                    <a class="nav-link" id="{{table}}-tab" data-toggle="tab" href="#{{table}}" role="tab" aria-controls="{{table}}" aria-selected="false" nr="{{loop.index-1}}">{{table | replace("_"," ")}}</a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        <!-- Nav bar informations -->
+        <div class="tab-content" id="table-content">
+            <br>
+            {% for table in db2_map %}
+                <div class="tab-pane fade" id="{{table}}" role="tabpanel" aria-labelledby="{{table}}-tab" nr="{{loop.index-1}}">
+                    <div class="table_container" style="min-height: 530px">
+                    <div class="float-right" style="margin-bottom:0.5em">Search {{table}}: <input id="input-{{table}}" type="text" style="margin-right:0.5em"><button type="button" class="btn btn-primary" id='search' name='search' value="{{table}}">Search</button></div>
+                    <br>
+                    <table class="table table-bordered">
+                        {% for col in db2_map[table] %}
+                            <col width="{{85 / db2_map[table]|length}}%">
+                        {% endfor %}
+                        {% if table!="LOG" %}
+                            <col width="15%">
+                        {% endif %}
+                        <thead>
+                        <tr>
+                          {% for col in db2_map[table] %}
+                            <th scope="col" col-index="{{loop.index-1}}" class="sort" name="sort" id="sort-{{table}}-{{col}}" table="{{table}}" sortstyle="none"><a href="#" class="sort-by">{{col}}</a></th>
+                          {% endfor %}
+                          {% if table!="LOG" %}
+                            <th scope="col"></th>
+                          {% endif %}
+                        </tr>
+                        </thead>
+                        <tbody class="data-table" table-name="{{table}}" id=table-{{table}}>
+                        </tbody>
+                    </table>
+                </div>
+                    <br>
+                    <div name="loading-icon" table-name="{{table}}" style="justify-content: center; display: flex;" ></div>
+                    <div class="input-group form-inline" style="justify-content: flex-end; display: flex;">
+                        <label for="add-{{table}}" class="col-md-2">To add an entry into Table {{table | replace("_"," ")}}:</label>
+                        <span name="add" table-name="{{table}}" class="input-group-btn">
+                            <button type="button" name="add" id="add-{{table}}" table-name="{{table}}" class="btn btn-primary" data-target="#edit-table-modal" data-toggle="modal">Add</button>
+                        </span>
+                    </div>
+                    <br>
+                    <div table-name="{{table}}" class="input-group" style="justify-content: center;">
+                        <span name="page-change-left" table-name="{{table}}" class="input-group-btn">
+                            <button type="button" name="start" class="btn btn-primary left">
+                                <i class="fas fa-angle-double-left"></i>
+                            </button>
+                            <button type="button" name="back" class="btn btn-primary left">
+                                <i class="fas fa-angle-left"></i>
+                            </button>
+                        </span>
+                        <input type="text" class="form-control col-md-1" name="page-nr" value="1" style="margin: 0 4px; text-align: center;">
+                        <span name="page-change-right" table-name="{{table}}" class="input-group-btn">
+                            <button type="button" name="forward" class="btn btn-primary right">
+                                <i class="fas fa-angle-right"></i>
+                            </button>
+                            <button type="button" name="end" class="btn btn-primary right">
+                                <i class="fas fa-angle-double-right"></i>
+                            </button>
+                        </span>
+                        <label id="InfoPage"></label>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Modal that shows up when Add or Change is pressed-->
+        <div class="modal fade" id="edit-table-modal" tabindex="-1" role="dialog" aria-labelledby="tableModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content" style="background-color: #3b4b54">
+              <div class="modal-header">
+                <h5 class="modal-title" id="tableModalLabel">Change data</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div id="changing-field-body" class="modal-body">
+                <!-- Changing input and field  -->
+                <div id="changing-field-wrapper"></div>
+                <!-- Changing  input and field hidden template-->
+                <div class="changing-field-template" style="display: none">
+                    <label style="width: 35%">Name</label>
+                    <input type="text" name="changing-input-template" style="width: 60%">
+                </div>
+                <!-- Always hidden -->
+                <input type="text" name="changing-input-hidden">
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" modal-button="changing" value="change-data" class="btn btn-primary" data-dismiss="modal">Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </form>
+</div>
+<div class="background" id="disPlay"> <span class="fa fa-spinner fa-spin icon personal-style-spin"></span>  </div>
+
+{% endblock %}
+
+{% block jscript %}
+<script src="/static/js/edit_select_tables.js" type="text/javascript"></script>
+<script src="/static/js/CustomTable.js" type="text/javascript"></script>
+{% endblock %}

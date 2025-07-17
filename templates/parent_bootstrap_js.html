@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    {% block head %}
+    {% endblock %}
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous"-->
+    <link rel="stylesheet" href="/static/downloaded/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B" crossorigin="anonymous">
+    <!--link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous"-->
+    <link rel="stylesheet" href="/static/downloaded/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/default.css">
+    <link rel="stylesheet" type="text/css" href="/static/stylesheets/colors.css">
+    <!--link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.css"-->
+    <link rel="stylesheet" type="text/css" href="/static/downloaded/jquery.dataTables.css">
+    {% block stylesheet %}
+    {% endblock %}
+  </head>
+
+  <body>
+      <header class="header">
+
+          <nav class="navbar navbar-light" style="background-color: #8acaf8;">
+            <div class="btnInNavBar">
+              <!-- <table>
+                <tr>
+                  <td>  <img src="/static/images/RDB logo - transparent background.png" width="300" height="108"></td>
+                </tr>
+                <tr>
+                  <td><img src="/static/images/Transparent_SMART_Logo_full.png" width="200" height="50"></td>
+                </tr>
+              </table> -->
+              <form action="#" method="post" style="display: contents;">
+                <label><a href="/home"><img src="/static/images/rdb-logo-png.png" width="40" height="45"></a></label>
+                <!--
+                {% if "RDBExceptionAdd" in session['data']['Groups'] %}
+                  <a href="/specialTables" class="btn btn-secondary" style="padding:.375rem .75rem">Exception Table</a>
+                {% endif %}
+                -->
+                {% if "RDB_Squad_configuration" in session['data']['Groups'] %}
+                  <a href="/squadData" class="btn btn-secondary" style="padding:.375rem .75rem">Squad Config</a>
+                {% endif %}
+                {% for key in buttons %}
+                  {% set list = buttons[key].split('-') %}
+                  {% if 'superuser' == list[0] %}
+                    <button class="btn btn-danger" name="{{buttons[key]}}">{{key}}</button>
+                  {% elif 'editors' == list[0] %}
+                    <button class="btn btn-success" name="{{buttons[key]}}">{{key}}</button>
+                  {% else %}
+                    <button class="btn btn-info" name="{{buttons[key]}}">{{key}}</button>
+                  {% endif %}
+                {% endfor %}
+              </form>
+            </div>
+            <div class="UserNavBar">{{ name }}</div>
+          </nav>
+      </header>
+    {% block body %}
+    {% endblock %}
+
+    <!--
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.js"></script>
+    -->
+
+    <script src="/static/downloaded/sweetalert.min.js"></script>
+    <script src="/static/downloaded/jquery-3.3.1.min.js"></script>
+    <script src="/static/downloaded/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="/static/downloaded/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
+    <script type="text/javascript" charset="utf8" src="/static/downloaded/jquery.dataTables.js"></script>
+
+
+    <script>
+      var user = '{{user}}';
+      var user_email = '{{user_email}}';
+    </script>
+    {% block jscript %}
+    {% endblock %}
+
+    <footer role="contentinfo" class="footer footer--fixed group -background-base" data-feature="page.footer">
+      <!--ul class='list-inline footer-list'>
+        <li class='list-inline-item footer-item'>
+          <a href="http://w3.ibm.com/w3/info_terms_of_use.html" target="_blank">Terms of Use</a>
+        </li>
+        <li class='list-inline-item footer-item'>
+          <a href="#">Privacy</a>
+        </li>
+        <li class='list-inline-item footer-item'>
+          <a href="#">Business Conduct Guidelines</a>
+        </li>
+        <li class='list-inline-item footer-item'>
+          <a href="#">Feedback</a>
+        </li>
+        <li class='list-inline-item footer-item'>
+          <a href="#">w3 Accessibility</a>
+        </li>
+        <li class='list-inline-item footer-item'>
+          <a href="#">w3 Community</a>
+        </li>
+
+        <li class="list-inline-item footer-item">
+          <em class="icon-awf-w3-logo-ibm"><span class="awf-access">IBM</span></em>
+        </li>
+      </ul-->
+
+    </footer>
+  </body>
+
+
+</html>

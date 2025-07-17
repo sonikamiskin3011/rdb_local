@@ -1,0 +1,22 @@
+{% extends "parent_bootstrap_css.html" %}
+
+{% block head %}
+<title>Workload</title>
+{% endblock %}
+
+{% block body %}
+<!-- style="margin: 2%;" -->
+<div   class="pageCorrection">
+    <form action="" method="post">
+        <button class="btn btn-info" name="workload-button" value="to-menu">Back</button>
+        <h1>Dashboard</h1>
+        <br>
+        <p class="encapsulate">Some information</p>
+        <p class="encapsulate">Other information</p>
+        <p class="encapsulate">More information</p> 
+        <br> 
+        <button class="btn btn-primary" name="workload-button" value="to-add">Add</button>
+        <button class="btn btn-primary" name="workload-button" value="to-views">Views</button>
+    </form>
+</div>
+{% endblock %}

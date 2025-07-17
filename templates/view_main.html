@@ -1,0 +1,1052 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block head %}
+<title>Table data view</title>
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/views.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/form.css">
+{% endblock %}
+
+{% block body %}
+<!-- style="margin: 2%;" -->
+<div class="background" id="disPlay"> <span class="fa fa-spinner fa-spin icon personal-style-spin"></span> </div>
+<div class="pageCorrection">
+  <h1 style="margin-bottom: 30px;" id="view-name">Test for views</h1>
+  <div id="btn-function" style="display: inline-flex;">
+    <!-- <Button id="expandBtn" class="btn btn-info mainViewBtn">Expand All</Button> -->
+    <Button id="collapseBtn" class="btn btn-info mainViewBtn">Collapse All</Button>
+	<Button id="refreshBtn" class="btn btn-info mainViewBtn">Refresh Data</Button>
+    <div class="search-field" style="display: inline-flex;right: 40px;position: absolute; ">
+      <input id="searchInput" class="form-control mainViewInput" type="text" placeholder="Search User..." name="search_User" style="margin-right: 0;"></input>
+        <button type="button" class="input-group-addon btn btn-info">
+          <span class="fa fa-search"></span></button>
+      </div>
+      <div id="btn-documents" style="float: right;">
+
+      </div>
+  </div>
+  <table class="View_table" name="View_table" id="main-table">
+    <!--   table-bordered  -->
+  </table>
+
+  <Button class='btn btn-default btn-circle back-to-top' style="display: none; position:fixed; bottom: 10px; right: 10px; padding: 10px;" name='button-top'><i class="fas fa-arrow-up"></i></Button>
+
+
+  <!-- Modal that shows up when Add Entry or Modify Selected is pressed-->
+  <form action method="post">
+  <div class="modal fade" id="form-modal" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content" style="background-color: #3b4b54">
+        <div class="modal-header">
+          <h5 class="modal-title" id="formModalLabel">Allocate the resource</h5>
+          <button type="button" model-button="changing-close" class="close" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+              <label style="width: 20%">Mkt Suppt</label>
+
+              <select name="{{modal[0]}}" style="width: 100%;max-width: 70%" use="modal"></select>
+
+            <br>
+
+              <label style="width: 20%">Role</label>
+
+              <select name="{{modal[1]}}" style="width: 100%;max-width: 70%" use="modal" child="{{modal[2]}}" has-master="{{first_section_n[9]}}" id="changeRole"></select>
+
+            <br>
+
+              <label style="width: 20%">Subrole</label>
+
+              <!-- onchange="checkSubRole()" -->
+            <select name="{{modal[2]}}" style="width: 100%;max-width: 70%" use="modal" has-master="{{first_section_n[9]}}" id="changeSubRole"></select>
+
+            <br>
+
+              <label style="width: 20%">Unit</label>
+
+              <select id="unit_dd" name="{{modal[3]}}" style="width: 100%;max-width: 70%" use="modal" child="{{modal[4]}}" onchange="subunitRelationship()" class="doNotCheck-select noRel-select"></select>
+
+            <br>
+
+              <label style="width: 20%">Subunit</label>
+
+              <select id="subunit_dd" name="{{modal[4]}}" style="width: 100%;max-width: 70%" use="modal"  class="doNotCheck-select noRel-select"></select>
+
+            <br>
+
+              <label style="width: 20%">Channel</label>
+
+              <select name="{{modal[5]}}" style="width: 100%;max-width: 70%" use="modal"></select>
+
+            <br>
+
+              <label style="width: 20%">O2O%</label>
+
+              <input name="{{modal[6]}}" size="5%" value="" use="modal">
+              <label style="width: 20%">%</label>
+
+            <br>
+
+              <label style="width: 20%">PCT</label>
+
+              <input name="{{modal[7]}}" size="5%" value="" use="modal">
+              <label style="width: 20%">%</label>
+
+            <br>
+
+            <div id="addedFields" style="display:none;">
+              <hr>
+              <label style="width: 20%">Cust Name</label>
+              <input type="text" name="cust_name" id="cust_name" size="width: 100%;max-width: 70%" value="" use="modal">
+              <button type="button" class="btn btn-success btn-sm" data-toggle="modal" data-target="#modalSearchLegalContractNo" onclick="iFrameURL();" id="searchButton" name="searchButton">Search</button>
+              <br>
+              <label style="width: 20%">Contract</label>
+              <input type="text" name="cust_contract" id="cust_contract" size="width: 100%;max-width: 70%" value="" use="modal">
+              <br>
+              <label style="width: 20%">Comments</label>
+              <!--input type="text" name="COMMENTS" size="width: 100%;max-width: 70%" value="" use="modal"-->
+              <textarea name="comments" id="comments" class="form-control form-control-sm" rows="8" size="width: 100%;max-width: 70%" value="" use="modal"></textarea>
+
+              <br>
+
+          		<div id="addedFields2">
+            		<label style="width: 20%">NonSOM</label>
+            		<input id="nonsom" name="nonsom" size="5%" value="" use="modal">
+            		<label style="width: 20%">%</label>
+            		<br>
+              </div>
+            </div>
+
+            <div id="addedFields3">
+              <hr>
+              <label style="width: 20%">Service Line</label>
+              <select class="exempt-select" name="service_line_dd" id="service_line_dd" style="width: 100%;max-width: 70%" onChange="serviceRelationship();copyServiceRelationship()">
+                {% for serviceLine in data_serviceLine %}
+                  <option value="{{serviceLine}}">{{serviceLine}}</option>
+                {% endfor %}
+              </select>
+              <input type="text" value="" name="service_line" id="service_line" use="modal" style="display:none">
+              <br>
+              <label style="width: 20%">Service Category</label>
+              <select class="exempt-select" name="service_category_dd" id="service_category_dd" style="width: 100%;max-width: 70%" onChange="copyServiceRelationship()"></select>
+              <input type="text" value="" name="service_category" id="service_category" use="modal" style="display:none">
+            </div>
+
+            <div id="addedFields4">
+              <hr>
+              <label style="width: 20%">Client</label>
+              <select class="exempt-select" name="client_dd" id="client_dd" style="width: 100%;max-width: 70%" onChange="copyClient()">
+                <option disabled selected value=""> -- Select Client -- </option>
+                {% for client in data_client %}
+                  <option value="{{client[1]}}">{{client[1]}}</option>
+                {% endfor %}
+              </select>
+              <input type="text" value="-" name="client" id="client" use="modal" style="display:none">
+              <br>
+              <label style="width: 20%">Primary Category</label>
+              <select class="exempt-select" name="primary_category_dd" id="primary_category_dd" style="width: 100%;max-width: 70%" onChange="copyPrimaryCategory()">
+                {% for primaryCat in data_categoryPrimary %}
+                  <option value="{{primaryCat[1]}}">{{primaryCat[1]}}</option>
+                {% endfor %}
+              </select>
+              <input type="text" value="" name="primary_category" id="primary_category" use="modal" style="display:none">
+              <br>
+              <label style="width: 20%">Secondary Category</label>
+              <select class="exempt-select" name="secondary_category_dd" id="secondary_category_dd" style="width: 100%;max-width: 70%" onChange="copySecondaryCategory()">
+                {% for secondaryCat in data_categorySecondary %}
+                  <option value="{{secondaryCat[1]}}">{{secondaryCat[1]}}</option>
+                {% endfor %}
+              </select>
+              <input type="text" value="" name="secondary_category" id="secondary_category" use="modal" style="display:none">
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" model-button="changing-close">Close</button>
+          <button type="button" name="" model-button="changing" class="btn btn-primary" onclick="saveSubRole();emptyComment();">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-background" style="display: none;">
+    <div class="modal-content" id="modal-personal-style" style="background-color: #3b4b54;"><!-- onscroll="retrieveSquadData()" -->
+      <div class="modal-header" id="doc-view">
+        <h5 class="modal-title" style="font-size: 2rem; font-weight: bold;">Document view</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="margin-right: 1%; margin-top: -3%; font-size: 40px;">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <div class="modal-body" style="margin-top: 5%">
+        <div id="forNew">
+
+        </div>
+
+
+        <!--  -->
+        <div class="encapsulate">
+          <!-- First section -->
+          <div>
+            <h2 id="add-btn">Employee Information
+            </h2>
+            <div class="encapsulate">
+
+              <div name="not-hide">
+
+                <!-- <label class="inner-label-width">Email</label> -->
+                <!-- email  -->
+                <!-- <input name="email-load" class="inner-width" placeholder="Enter email" type="text"> -->
+
+                <label class="inner-label-width" style="margin-left: 47.7%;">Employee Code</label>
+
+                <input name="employee_code" class="inner-width" from="bp" readonly="" type="text" saveid="1">
+
+                <br>
+
+                <!--label class="inner-label-width" style="margin-bottom:0px" style="display:none;">"Notes" ID</label-->
+
+                <input name="notes_id" class="inner-width" from="bp" readonly="" type="text" saveid="2" style="display:none;">
+
+                <label class="inner-label-width" style="margin-left: 0em; margin-bottom:0px">Resource description</label>
+
+                <input name="name" class="inner-width" from="bp" readonly="" type="text" saveid="3">
+
+                <label class="inner-label-width"></label>
+
+                <label class="inner-width"></label>
+
+                <label class="inner-label-width" style="margin-left: 0em;"></label>
+
+                <input id="email" name="email" class="inner-width" from="bp" readonly="" type="text" saveid="4">
+
+                <label class="inner-label-width"></label>
+
+                <label class="inner-width"></label>
+
+                <label class="inner-label-width" style="margin-left: 0em;"></label>
+
+                <input name="title" class="inner-width" from="bp" readonly="" type="text" saveid="5">
+
+                <label class="inner-label-width"></label>
+
+                <label class="inner-width"></label>
+
+                <label class="inner-label-width" style="margin-left: 0em;"></label>
+
+                <input name="organization_f" class="inner-width" from="bp" readonly="" style="margin-bottom: .5rem;"
+                  type="text" saveid="6">
+
+                <input name="first_name" class="inner-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="7">
+
+                <input name="last_name" class="inner-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="8">
+
+                <br>
+
+                <label class="inner-label-width">Tower</label>
+
+                <select id="tower-select" name="tower" class="inner-width" readonly="" child="organization_s" saveid="9"  value="" onchange="eamSection();checkTower();towerRelationship();squadNameDD();subdomRelationship();squadRelationship();squadNameRelationship();copySubdomain();"></select>
+
+                <label class="inner-label-width" style="margin-left: 2em;">Organization</label>
+
+                <select id="org-select" name="organization_s" class="master inner-width" readonly="" child="role" disabled="true" saveid="10"></select>
+
+                <br>
+
+                <label class="inner-label-width">Personnel nbr</label>
+
+                <input name="personal_nmbr" class="inner-width" from="bp" readonly="" type="text" saveid="11">
+
+                <label class="inner-label-width" style="margin-left: 2em;">Status</label>
+
+                <select name="status" class="inner-width" readonly="" saveid="12" id="status" onChange="statusCheck()"></select>
+
+                <br>
+
+              </div>
+
+              <div name="hide">
+
+                <label class="inner-label-width">Country (location)</label>
+
+                <input name="country_l" class="inner-width" from="bp" readonly="" type="text" saveid="13">
+
+                <label class="inner-label-width" style="margin-left: 2em;">Department</label>
+
+                <input name="dep" class="inner-width" from="bp" readonly="" type="text" saveid="14">
+
+                <br>
+
+                <label class="inner-label-width">Country code</label>
+
+                <input name="country_c" class="inner-width" from="bp" readonly="" type="text" saveid="15">
+
+                <label class="inner-label-width" style="margin-left: 2em;display:none;">Cost center</label>
+
+                <input name="cost_center" class="inner-width" from="bp" readonly="" type="text" saveid="16" style="display:none;">
+
+                <br>
+
+                <label class="inner-label-width">GEO/Mkt</label>
+
+                <select name="geo-mkt-mkt1" class="inner-width" from="country_l" readonly="" disabled="disabled" saveid="17"></select>
+
+                <label class="inner-label-width" style="margin-left: 2em;">Manager flag</label>
+
+                <input name="manager_flag" class="inner-width" from="bp" readonly="" type="text" saveid="18">
+
+                <br>
+
+                <label class="inner-label-width">City</label>
+
+                <input name="city" class="inner-width" from="bp" readonly="" type="text" saveid="19">
+
+                <label class="inner-label-width" style="margin-left: 2em;">Division</label>
+
+                <input name="div" class="inner-width" from="bp" readonly="" type="text" saveid="20">
+
+                <br>
+
+                <label class="inner-label-width">Location</label>
+
+                <input name="location" class="inner-width" from="bp" readonly="" type="text" saveid="21">
+
+                <label class="inner-label-width" style="margin-left: 2em;">Business Unit</label>
+
+                <input name="bu" class="inner-width" from="bp" readonly="" type="text" saveid="22">
+
+                <br>
+
+                <label class="inner-label-width">Office</label>
+
+                <input name="office" class="inner-width" from="bp" readonly="" type="text" saveid="23">
+
+                <label class="inner-label-width" style="margin-left: 2em;">Orgcode</label>
+
+                <input name="orgcode" class="inner-width" from="bp" readonly="" type="text" saveid="24">
+
+              </div>
+
+            </div>
+
+          </div>
+          <br>
+
+          <!-- New Section: Asset Management <div id="eam-section" style="display:none"-->
+          <div id="eam-section">
+            <h2>Asset Management</h2>
+            <div class="encapsulate">
+              <!-- <label class="inner-label-width">Approval Evidence</label>
+              <input class="inner-width" type="text" id="approval_evidence" name="approval_evidence" from="bp" saveid="53">
+              style="margin-left: 2em;"-->
+
+              <label class="inner-label-width">Job Position</label>
+              <input class="inner-width" type="text" id="job_position" name="job_position" from="bp" saveid="52" style="display:none">
+              <select class="inner-width exempt-select doNotClear-select disabledSelect" id="job_position_dd" name="job_position_dd" onChange="copyJobPosition()">
+                <option value="Squad Member">Squad Member</option>
+                <option value="Iteration Manager">Iteration Manager</option>
+                <option value="Product Owner">Product Owner</option>
+                <option value="Squad Leader">Squad Leader</option>
+                <option value="BU/GEO">BU/GEO</option>
+              </select>
+            </div>
+          <br>
+          </div>
+
+          <!-- Second section -->
+          <div name="hide">
+            <h2>Manager Information</h2>
+            <div class="encapsulate">
+
+              <div name="not-hide">
+
+                <label class="inner-label-width"></label>
+
+                <label class="text-field-width" style="font-size: 1.2em;text-align:center;display:none">Notes ID</label>
+
+                <label class="text-field-width2" style="font-size: 1.2em;text-align:center;">Email</label>
+
+                <label class="text-field-width2" style="font-size: 1.2em;text-align:center;">Full Name</label>
+
+                <br>
+
+                <label class="inner-label-width">1st line Manager</label>
+
+                <input name="manager_1_notes_id" class="text-field-width" from="bp" readonly="" type="text" saveid="25" style="display:none;">
+
+                <input name="manager_1_email" class="text-field-width2" from="bp" readonly="" type="text" saveid="26">
+
+                <input name="manager_1_name" class="text-field-width2" from="bp" readonly="" type="text" saveid="27">
+
+                <input name="manager_1_num" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="28">
+
+                <input name="manager_1_first" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="29">
+
+                <input name="manager_1_last" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="30">
+
+                <br style="display:none;">
+
+                <label class="inner-label-width" style="display:none;">2nd line Manager</label>
+
+                <input name="manager_2_notes_id" class="text-field-width" from="bp" readonly="" type="text" saveid="31" style="display:none;">
+
+                <input name="manager_2_email" class="text-field-width" from="bp" readonly="" type="text" saveid="32" style="display:none;">
+
+                <input name="manager_2_name" class="text-field-width" from="bp" readonly="" type="text" saveid="33" style="display:none;">
+
+                <input name="manager_2_num" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="34">
+
+                <input name="manager_2_first" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="35">
+
+                <input name="manager_2_last" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="36">
+
+                <br>
+
+                <label class="inner-label-width">Functional Manager</label>
+
+                <input name="rep_notes_id" class="text-field-width" from="bp" readonly="" type="text" saveid="37" style="display:none;">
+
+                <input id="rep_email" name="rep_email" class="text-field-width2" from="bp" readonly="" type="text" saveid="38">
+
+                <input name="rep_name" class="text-field-width2" from="bp" readonly="" type="text" saveid="39">
+
+                <input name="rep_num" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="40">
+
+                <input name="rep_first" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="41">
+
+                <input name="rep_last" class="text-field-width" from="bp" readonly="" style="display:none;" type="text"
+                  saveid="42">
+
+                <br>
+
+                <label class="inner-label-width">2nd line Functional Manager</label>
+                <input id="rep_2_notes_id" name="rep_2_notes_id" class="text-field-width" readonly="" type="text" SaveID="57" from="bp" style="display:none;">
+                <input id="rep_2_email" name="rep_2_email" class="text-field-width2" readonly="" type="text" SaveID="58" from="bp">
+                <input id="rep_2_name" name="rep_2_name" class="text-field-width2" readonly="" type="text" SaveID="59" from="bp">
+
+                <label class="inner-label-width">3rd line Functional Manager</label>
+                <input id="rep_3_notes_id" name="rep_3_notes_id" class="text-field-width" readonly="" type="text" SaveID="60" from="bp" style="display:none;">
+                <input id="rep_3_email" name="rep_3_email" class="text-field-width2" readonly="" type="text" SaveID="61" from="bp">
+                <input id="rep_3_name" name="rep_3_name" class="text-field-width2" readonly="" type="text" SaveID="62" from="bp">
+
+                <br>
+
+              </div>
+
+            </div>
+            <br>
+          </div>
+          <!-- Third section -->
+          <div name="hide">
+            <h2>Other Information</h2>
+            <div class="encapsulate">
+
+              <div name="not-hide">
+
+
+                <label class="inner-label-width">Center name</label>
+
+                <select name="center_name" class="inner-width" readonly="" saveid="43"></select>
+
+                <label class="inner-label-width" style="margin-left: 2em;">Center flag</label>
+
+                <input name="center_flag" class="inner-width" readonly="" value="NO" type="text" saveid="44">
+
+                <br>
+
+                <div id="squadDefault">
+                  <label class="inner-label-width" style="display:none">Subdomain</label>
+                  <input name="subdomain" class="inner-width" readonly="" type="text" saveid="63" id="subdomain" style="display:none">
+                  <br style="display:none">
+                  <label class="inner-label-width">Squad Group</label>
+                  <input name="squad_group" class="inner-width" readonly="" type="text" saveid="45" id="squad_group">
+                  <label class="inner-label-width" style="margin-left: 2em;">Squad Name</label>
+                  <input name="squad_name" class="inner-width" readonly="" type="text" saveid="46" id="squad_name">
+                </div>
+
+                <div id="squadDD" style="display:none">
+
+                  <label class="inner-label-width">Subdomain</label>
+
+                  <select class="inner-width exempt-select doNotClear-select disabledSelect" id="subdomain_dd" name="subdomain_dd" onchange="subdomRelationship();squadRelationship();copySquadRelationship();copySubdomain();squadNameRelationship();"></select>
+                  <br>
+                  <label class="inner-label-width">Squad Group</label>
+                  <select class="inner-width exempt-select doNotClear-select disabledSelect" id="squad_group_dd" name="squad_group_dd" onchange="squadRelationship();copySquadRelationship();squadNameRelationship();">
+                    <option value=""></option>
+                  </select>
+                  <label class="inner-label-width" style="margin-left: 2em;">Squad Name</label>
+                  <select class="inner-width exempt-select doNotClear-select disabledSelect" id="squad_name_dd" name="squad_name_dd" onchange="copySquadRelationship();squadNameRelationship();"></select>
+                </div>
+
+                <label class="inner-label-width"></label>
+                <label class="inner-width"></label>
+                <label class="inner-label-width" style="margin-left: 2em;">Squad Lead</label>
+                <input name="squad_lead" class="inner-width" readonly="" type="text" SaveID="64" id="squad_lead">
+
+                <br>
+
+                <label class="inner-label-width hide-element">Squad description</label>
+
+                <input name="squad_desc" class="hide-element" readonly="" style="width: 77.7%" type="text" saveid="47">
+
+                <br>
+
+                <label class="inner-label-width" style="display:none;">Language</label>
+
+                <input name="language" class="inner-width" from="bp" readonly="" type="text" saveid="48" style="display:none;">
+
+                <label class="inner-label-width" style="margin-left: 0em;">Area</label>
+
+                <select name="area" class="inner-width" readonly="" type="text" saveid="49"> </select>
+
+                <label class="inner-label-width" style="margin-left: 2em;">Approval Evidence</label>
+              <input class="inner-width" type="text" id="approval_evidence" name="approval_evidence" from="bp" saveid="53">
+                <br>
+
+              </div>
+              <div style="display: flex">
+                <a class="inner-label-width" style="margin-right: 2px">Remarks</a>
+                <textarea name="remarks" class="inner-width" rows="4" cols="60" maxlength="500" readonly="" style="resize:both; margin-left: 2px;" saveid="50"></textarea>
+
+              <label class="inner-label-width" style="margin-left: 2em;">Accelerate Role</label>
+              <select class="inner-width exempt-select" id="accelerate_role" name="accelerate_role" from="bp" saveid="51" style="margin-left: .5em;height:2em">
+                <option></option>
+              </select>
+
+              </div>
+
+              <br>
+
+              <div style="display:none">
+                <label class="inner-label-width">Start Date</label>
+                <input id="start_date" name="start_date" class="inner-width" type="text" saveid="54" readonly="">
+                <label class="inner-label-width" style="margin-left: 2em;">Conversion Date</label>
+                <input id="conversion_date" name="conversion_date" class="inner-width" type="text" saveid="55" readonly="">
+                <label class="inner-label-width">Contract End Date</label>
+                <input id="contract_end_date" name="contract_end_date" class="inner-width" saveid="68" type="text" readonly="">
+                <br>
+                <label class="inner-label-width">End Date</label>
+                <input id="end_date" name="end_date" class="inner-width" type="text" saveid="56" readonly="">
+                <br>
+              </div>
+
+              <label class="inner-label-width">Start Date</label>
+              <input id="start_date_dp" name="start_date_dp" class="inner-width" type="date" onChange="dateCopy()">
+              <label class="inner-label-width" style="margin-left: 2em;">Conversion Date</label>
+              <input id="conversion_date_dp" name="conversion_date_dp" class="inner-width" type="date" onChange="dateCopy()">
+              <label class="inner-label-width">Contract End Date</label>
+              <input id="contract_end_date_dp" name="contract_end_date_dp" class="inner-width" type="date" onChange="dateCopy()">
+              <!-- <div id="endDateDiv" style="display:none"> -->
+              <label id="endDateLabel" class="inner-label-width" style="margin-left: 2em;display:none">End Date</label>
+              <input id="end_date_dp" name="end_date_dp" class="inner-width endDate" style="display:none" type="date" onChange="dateCopy()">
+              <!-- </div> -->
+              <br>
+
+            </div>
+            <br>
+          </div>
+        </div>
+        <div>
+          <h2>Details</h2>
+          <div class="encapsulate">
+            <!-- Display Total FTE -->
+            <div style="float: left; padding: inherit; width: 100%" id="totalFTE">
+
+              <a name="error-fte" style="color: #FF0000;"></a>
+            </div>
+            <!-- Table that shows added entries  -->
+            <table class="table table-bordered" cellspacing="0" id="details_table" name="details_table">
+              <thead>
+                <tr>
+                  <th scope="col" modal-name="radioBtn" col-index="0"></th>
+
+                  <th scope="col" modal-name="rep_country" col-index="1">Mkt supported</th>
+
+                  <th scope="col" modal-name="role" col-index="2">Role</th>
+
+                  <th scope="col" modal-name="subrole" col-index="3">Subrole</th>
+
+                  <th scope="col" modal-name="o2o" col-index="4">O2O%</th>
+
+                  <th scope="col" modal-name="unit" col-index="5">Unit</th>
+
+                  <th scope="col" modal-name="subunit" col-index="6">Subunit</th>
+
+                  <th scope="col" modal-name="channel" col-index="7">Channel</th>
+
+                  <th scope="col" modal-name="pct" col-index="8">%</th>
+
+                  <th scope="col" modal-name="cust_name" col-index="9">Customer Name</th>
+                  <th scope="col" modal-name="cust_contract" col-index="10">Contract</th>
+                  <th scope="col" modal-name="comments" col-index="11">Comments</th>
+		              <th scope="col" modal-name="nonsom" col-index="12">Non SOM</th>
+
+                  <th scope="col" modal-name="service_line" col-index="13">Service Line</th>
+                  <th scope="col" modal-name="service_category" col-index="14">Service Category</th>
+
+                  <th scope="col" modal-name="client" col-index="15">Client</th>
+                  <th scope="col" modal-name="primary_category" col-index="16">P. Cat</th>
+                  <th scope="col" modal-name="secondary_category" col-index="17">S. Cat</th>
+
+
+                  <th scope="col" modal-name="fte" col-index="18">FTE</th>
+
+
+                </tr>
+              </thead>
+              <tbody class="data-table readTbody">
+              </tbody>
+            </table>
+            <!-- Buttons after the table -->
+            <div id="EditTable">
+
+            </div>
+            <div class="under-table" style="margin-top: 1%;">
+              <em name="calc-ver"></em>
+              <i name="icon-ver"></i>
+              <em name="calc-fte" style="width: 25%; padding-left: 20px">Total FTE = 0</em>
+            </div>
+          </div>
+        </div>
+            <!-- Fifth Section -->
+    <div>
+      <h2>Changes History</h2>
+      <div class="encapsulate">
+        <div style="display: grid">
+          <button name="UnwrapHistory" id="view_History" type="button" class="btn btn-info">View History of Saves</button>
+          <div class="last-time">
+            <label class="inner-label-width" id="LastSave">Last Save</label>
+            <div id="last-save"></div>
+          </div>
+
+          <div class="HistoryField" style="display: none">
+            <label class="inner-label-width" id="HistoryOfSavesLabel">History of Saves</label>
+            <div id="HistoryOfSaves"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+      </div>
+
+
+    </div>
+  </div>
+
+<!--modal for searching Legal Contract No-->
+<div class="modal fade" id="modalSearchLegalContractNo">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="background-color: #3b4b54">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Search Contract</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body" style="height:70vh">
+         <iframe src="" id="searchContract" name="searchContract" height="100%" width="100%" target="_self"></iframe>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        Selected: &nbsp <input type="text" name="XinputA" id="XinputA" disabled><input type="text" name="XinputB" id="XinputB" hidden><br>
+        <button type="button" onclick="copyContract(document.getElementById('XinputA').value,document.getElementById('XinputB').value)" class="btn btn-success" model-button="search-close">Save</button>
+        <button type="button" class="btn btn-danger" model-button="search-close">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</form>
+  <!--  -->
+</div>
+
+
+<style>
+  .contFrame{
+    height: 100%;
+      width: 100%
+  }
+  </style>
+{% endblock %}
+
+
+{% block jscript %}
+<script src="/static/js/view_main.js" type="text/javascript"></script>
+<script src="/static/js/form/FormFunctionality.js" type="text/javascript"></script>
+<script src="/static/js/form/bp.js" type="text/javascript"></script>
+<script src="/static/js/periodicAgent.js" type="text/javascript"></script>
+<script src="/static/js/form/searchContract.js" type="text/javascript"></script>
+<script src="/static/js/form/loadManagers.js" type="text/javascript"></script>
+<script>
+  function myFunc2 (x,y) {
+    document.getElementById("XinputA").value = x;
+    document.getElementById("XinputB").value = y;
+  }
+
+  function serviceRelationship() {
+    var series = [
+      {% for serviceRel in data_serviceRel %}{line: "{{serviceRel[0]}}", cat: "{{serviceRel[1]}}"},
+      {% endfor %}
+      {line: "", cat: ""}
+    ]
+    var serviceLine = $("#service_line_dd").val();
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.line == serviceLine){
+        options += "<option value='" + value.cat + "'>" + value.cat + "</option>";
+      }
+    });
+
+    $("#service_category_dd").html(options);
+  }
+
+  function serviceSetup() {
+    $("select[name = service_line_dd]").empty();
+    {% for serviceLine in data_serviceLine %}
+      $("select[name = service_line_dd]").append("<option value='{{serviceLine}}'>{{serviceLine}}</option>");
+    {% endfor %}
+  }
+
+  function copyServiceRelationship(){
+    document.getElementById("service_line").value = $("#service_line_dd").val();
+    document.getElementById("service_category").value = $("#service_category_dd").val();
+  }
+
+  function squadNameDD() {
+    var org = document.getElementById("org-select").value.replace('&','&amp;');
+    var tower = document.getElementById("tower-select").value;
+    var squadDef = document.getElementById("squadDefault");
+    var squadDD = document.getElementById("squadDD");
+    if (org != "Q2C Service" && org != "Q2C Services") {
+      squadDef.style.display = "none";
+      squadDD.style.display = "block";
+    } else {
+      squadDef.style.display = "block";
+      squadDD.style.display = "none";
+    }
+  }
+
+  function squadRelationship() {
+    var series = [
+      {% for squadConfigAll in data_squadConfigAll %}{tower: "{{squadConfigAll[0]}}", subdom: "{{squadConfigAll[1]}}", sqGroup: "{{squadConfigAll[2]}}", sqName: "{{squadConfigAll[3]}}",},
+      {% endfor %}
+      {tower: "", subdom: "", sqGroup: "", sqName: ""}
+    ]
+
+    var towerVal = $("#tower-select").val();
+    if (towerVal !== null) {
+      towerVal = towerVal.replace('&','&amp;');
+    }
+    var subdomVal = $("#subdomain_dd").val();
+    if (subdomVal !== null) {
+      subdomVal = subdomVal.replace('&','&amp;');
+    }
+    var sqGroupVal = $("#squad_group_dd").val();
+    if (sqGroupVal !== null) {
+      sqGroupVal = sqGroupVal.replace('&','&amp;');
+    }
+    var options =  "";
+
+    $(series).each(function(index, value){
+      if(value.tower == towerVal && value.subdom == subdomVal && value.sqGroup == sqGroupVal){
+        options += "<option value='" + value.sqName + "'>" + value.sqName + "</option>";
+      }
+    });
+
+    $("#squad_name_dd").empty();
+    $("#squad_name_dd").html(options);
+  }
+
+  function copySquadRelationship(){
+    document.getElementById("squad_group").value = $("#squad_group_dd").val();
+    document.getElementById("squad_name").value = $("#squad_name_dd").val();
+  }
+
+  function copyInitialSquadRelationship(){
+    document.getElementById("squad_group_dd").value = $("#squad_group").val();
+    document.getElementById("squad_name_dd").value = $("#squad_name").val();
+  }
+
+  function copyInitialSubdomain(){
+    document.getElementById("subdomain_dd").value = $("#subdomain").val();
+  }
+
+  function copySubdomain(){
+    document.getElementById("subdomain").value = $("#subdomain_dd").val();
+  }
+
+  function subdomRelationship() {
+    var series = [
+      {% for squadGroupRel in data_squadGroupRel %}{sub: "{{squadGroupRel[0]}}", tribe: "{{squadGroupRel[1]}}"},
+      {% endfor %}
+    ]
+    var parentVal = $("#subdomain_dd").val();
+    if (parentVal !== null) {
+      parentVal = parentVal.replace('&','&amp;');
+    }
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.sub == parentVal){
+        options += "<option value='" + value.tribe + "'>" + value.tribe + "</option>";
+      }
+    });
+
+    $("#squad_group_dd").html(options);
+  }
+
+  function towerRelationship() {
+    var series = [
+      {% for towerRel in data_towerRel %}{sub: "{{towerRel[0]}}", tribe: "{{towerRel[1]}}"},
+      {% endfor %}
+    ]
+    var parentVal = $("#tower-select").val();
+    if (parentVal !== null) {
+      parentVal = parentVal.replace('&','&amp;');
+    }
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.sub == parentVal){
+        options += "<option value='" + value.tribe + "'>" + value.tribe + "</option>";
+      }
+    });
+
+    $("#subdomain_dd").html(options);
+  }
+
+  function copyPrimaryCategory(){
+    document.getElementById("primary_category").value = $("#primary_category_dd").val();
+  }
+
+  function copySecondaryCategory(){
+    document.getElementById("secondary_category").value = $("#secondary_category_dd").val();
+  }
+
+  function categorySetup() {
+    pCat = document.getElementById('primary_category').value;
+    $("select[name = primary_category_dd]").empty();
+    {% for primaryCat in data_categoryPrimary %}
+      $("select[name = primary_category_dd]").append("<option value='{{primaryCat[1]}}'>{{primaryCat[1]}}</option>");
+    {% endfor %}
+    if (pCat == "") {
+      document.getElementById("primary_category_dd").value = "None"
+    } else {
+      document.getElementById("primary_category_dd").value = pCat;
+    }
+
+    sCat = document.getElementById('secondary_category').value;
+    $("select[name = secondary_category_dd]").empty();
+    {% for secondaryCat in data_categorySecondary %}
+      $("select[name = secondary_category_dd]").append("<option value='{{secondaryCat[1]}}'>{{secondaryCat[1]}}</option>");
+    {% endfor %}
+    if (sCat == "") {
+      document.getElementById("secondary_category_dd").value = "None"
+    } else {
+      document.getElementById("secondary_category_dd").value = sCat;
+    }
+
+    client = document.getElementById('client').value;
+    $("select[name = client_dd]").empty();
+    $("select[name = client_dd]").append("<option disabled selected value=''> -- Select Client -- </option>");
+    {% for cli in data_client %}
+      $("select[name = client_dd]").append("<option value='{{cli[1]}}'>{{cli[1]}}</option>");
+    {% endfor %}
+    if (client == "-" || client == "") {
+      var x = "This function is here to prevent Missing Function error";
+    } else {
+      document.getElementById("client_dd").value = client;
+    }
+
+  }
+
+  function clearCategory(){
+    document.getElementById("primary_category").value = "None"
+    document.getElementById("primary_category_dd").value = "None"
+    document.getElementById("secondary_category").value = "None"
+    document.getElementById("secondary_category_dd").value = "None"
+    document.getElementById("client").value = "-"
+  }
+
+  function copyClient(){
+    document.getElementById("client").value = $("#client_dd").val();
+  }
+
+  function copyOnModify(){
+    document.getElementById("primary_category_dd").value = $("#primary_category").val();
+    document.getElementById("secondary_category_dd").value = $("#secondary_category").val();
+    document.getElementById("client_dd").value = $("#client").val();
+  }
+
+  function unitRelationship() {
+    var series = [
+      {% for unitRel in data_unitRel %}{sub: "{{unitRel[0]}}", tribe: "{{unitRel[1]}}"},
+      {% endfor %}
+      {sub: "", tribe: ""}
+    ]
+    var parentVal = $("#org-select").val();
+    if (parentVal !== null) {
+      parentVal = parentVal.replace('&','&amp;');
+    }
+    var options =  "";
+    var defaultVal = $("#unit_dd").val();
+    $(series).each(function(index, value){
+      if(value.sub == parentVal){
+        if(value.tribe == defaultVal){
+          options += "<option value='" + value.tribe + "' selected>" + value.tribe + "</option>";
+        } else {
+          options += "<option value='" + value.tribe + "'>" + value.tribe + "</option>";
+        }
+      }
+    });
+
+    $("#unit_dd").html(options);
+  }
+
+  function subunitRelationship() {
+    var org = document.getElementById("org-select").value.replace('&','&amp;');
+    var series = [
+      {% for subUnitRel in data_subUnitRel %}{unit: "{{subUnitRel[0]}}", subunit: "{{subUnitRel[1]}}", org: "{{subUnitRel[2]}}"},
+      {% endfor %}
+      {unit: "", subunit: "", org: ""}
+    ]
+    var parentVal = $("#unit_dd").val();
+    if (parentVal !== null) {
+      parentVal = parentVal.replace('&','&amp;');
+    }
+    var options =  "";
+    var defaultVal = $("#subunit_dd").val();
+    $(series).each(function(index, value){
+      if(value.unit == parentVal && value.org == org){
+        if(value.subunit == defaultVal){
+          options += "<option value='" + value.subunit + "' selected>" + value.subunit + "</option>";
+        } else {
+          options += "<option value='" + value.subunit + "'>" + value.subunit + "</option>";
+        }
+      }
+    });
+
+    $("#subunit_dd").html(options);
+  }
+
+  function squadNameRelationship() {
+    var series = [
+      {% for squadNameRel in data_squadNameRel %}{sub: "{{squadNameRel[0]}}", tribe: "{{squadNameRel[1]}}"},
+      {% endfor %}
+      {sub: "", tribe: ""}
+    ]
+    var parentVal = $("#squad_name_dd").val();
+    if (parentVal !== null) {
+      parentVal = parentVal.replace('&','&amp;');
+    }
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.sub == parentVal){
+        options = value.tribe;
+      }
+    });
+
+    document.getElementById("squad_lead").value = options;
+  }
+
+  function eamSection(){
+    var accelRole = $("#accelerate_role").val();
+    $("select[name = accelerate_role]").empty();
+    $("select[name = job_position_dd]").empty();
+
+    var tower = document.getElementById("tower-select").value;
+
+    if (tower == "Asset Management") {
+      options1 = "";
+      $('#accelerate_role').css('display','none');
+      $('#accelerate_role_label').css('display','none');
+      options2 = "{% for jobPosition in data_jobPosition %}<option value='{{jobPosition[1]}}' selected>{{jobPosition[1]}}</option>{% endfor %}";
+    } else {
+      options1 = "<option value='' selected></option><option value='Doer'>Doer</option><option value='Enabler'>Enabler</option><option value='N/A'>N/A</option>";
+      $('#accelerate_role').css('display','block');
+      $('#accelerate_role_label').css('display','block');
+      options2 = "<option value='None' selected>None</option>";
+    }
+
+    $("#accelerate_role").html(options1);
+    $("#job_position_dd").html(options2);
+
+    document.getElementById("accelerate_role").value = accelRole;
+
+    copyJobPosition();
+  }
+
+  function repopulateNewFields2(){
+    $("select[name = job_position]").empty();
+
+    var tower = document.getElementById("tower-select").value;
+    var accelerateRole = document.getElementById("accelerate_role").value;
+
+    if (tower == "Asset Management") {
+      options1 = "";
+      $('#accelerate_role').css('display','none');
+      $('#accelerate_role_label').css('display','none');
+      options2 = "{% for jobPosition in data_jobPosition %}<option value='{{jobPosition[1]}}'>{{jobPosition[1]}}</option>{% endfor %}";
+    } else {
+      options1 = "<option value='' selected></option><option value='Doer'>Doer</option><option value='Enabler'>Enabler</option><option value='N/A'>N/A</option>";
+      $('#accelerate_role').css('display','block');
+      $('#accelerate_role_label').css('display','block');
+      options2 = "<option value='None' selected>None</option>";
+    }
+
+    $("#accelerate_role").html(options1);
+    $("#accelerate_role").val(accelerateRole);
+
+    $("#job_position_dd").html(options2);
+    copyJobPositionInit();
+  }
+
+  function onEditButton(){
+
+    var towerVal = $("#tower-select").val();
+    /*if (towerVal !== null) {
+      towerVal = towerVal.replace('&','&amp;');
+    }*/
+    var subdomVal = $("#subdomain").val();
+    /*if (subdomVal !== null) {
+      subdomVal = subdomVal.replace('&','&amp;');
+    }*/
+    var sqGroupVal = $("#squad_group").val();
+    /*if (sqGroupVal !== null) {
+      sqGroupVal = sqGroupVal.replace('&','&amp;');
+    }*/
+    var sqNameVal = $("#squad_name").val();
+    /*if (sqNameVal !== null) {
+      sqNameVal = sqNameVal.replace('&','&amp;');
+    }*/
+
+    towerRelationship();
+    document.getElementById("subdomain").value = subdomVal;
+    document.getElementById("subdomain_dd").value = subdomVal;
+
+    subdomRelationship();
+    document.getElementById("squad_group").value = sqGroupVal;
+    document.getElementById("squad_group_dd").value = sqGroupVal;
+
+    squadRelationship();
+    document.getElementById("squad_name").value = sqNameVal;
+    document.getElementById("squad_name_dd").value = sqNameVal;
+
+    squadNameRelationship();
+
+  }
+
+</script>
+{% endblock %}

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Drag and Drop</title>
+    <style>
+      #sortable1, #sortable2 {
+        border: 3px solid #eee;
+        background-color: #fef9e7;
+        width: 300px;
+        height: 400px;
+        overflow-y: auto;
+        list-style-type: none;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+      }
+      #moveButtons {
+        border: none;
+        width: 40px;
+        height: 400px;
+        list-style-type: none;
+        margin: 0;
+        margin-top: 130px;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+      }
+      #sortable1 li, #sortable2 li, #results li {
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        font-size: 12px;
+        width: auto;
+      }
+      /* #sortable1 li:hover, #sortable2 li:hover{
+        background-color: #f2f3f4;
+      } */
+      .ui-state-default{
+        border: 1px solid #eee;
+        background-color: white;
+      }
+      #results{
+        width: 300px;
+        height: 400px;
+        overflow-y: auto;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+        margin-left: 10px;
+      }
+      .selected{
+        background-color: #ccd1d1;
+      }
+      #myInput2{
+        margin-left: 56px;
+      }
+      li {
+        cursor: pointer;
+      }
+      input{
+        width: 270px;
+      }
+    </style>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+      // function to save/print out the results
+      function save(){
+        $("#results li").remove();
+
+        var items = []
+        $('#sortable2 li').each(function (index, value) {
+          let item = {};
+          item.value = $(value).data('value');
+          items.push(item);
+        });
+
+        $.each(items, function (index, value) {
+          $("#results").append('<li>' + Object.values(value)+ '</li>');
+        });
+      }
+
+      function moveAll(src, dest){
+        $(src).children().appendTo(dest);
+      }
+
+      function moveRightAll(){
+        moveAll('#sortable1', '#sortable2');
+      }
+
+      function moveLeftAll(){
+        moveAll('#sortable2', '#sortable1');
+      }
+
+      // this function selects an item
+      function select(item){
+        $(item).toggleClass('selected');
+      }
+
+      function moveRight(){
+        selected = document.getElementsByClassName('selected');
+        if($(selected).parent().attr('id') == 'sortable1'){
+          $(selected).detach().appendTo('#sortable2');
+        }
+        $(selected).removeClass('selected');
+      }
+
+      function moveLeft(){
+        selected = document.getElementsByClassName('selected');
+        if($(selected).parent().attr('id') == 'sortable2'){
+          $(selected).detach().appendTo('#sortable1');
+        }
+        $(selected).removeClass('selected');
+      }
+
+      function searchFunction1() {
+          var input, value;
+          input = document.getElementById("myInput1");
+          value = input.value.toLowerCase().trim();
+          $("#sortable1 *").show().filter(function(){
+            return $(this).text().toLowerCase().trim().indexOf(value) == -1;
+          }).hide();
+      }
+
+      function searchFunction2() {
+          var input, value;
+          input = document.getElementById("myInput2");
+          value = input.value.toLowerCase().trim();
+          $("#sortable2 *").show().filter(function(){
+            return $(this).text().toLowerCase().trim().indexOf(value) == -1;
+          }).hide();
+      }
+
+      // this function clears the content of the input field upon clicking the 'X' button
+      function reset(field){
+        var listId;
+        listId = $(field).attr('id')
+        if (listId == "button1"){
+          $('#myInput1').val(null);
+          $("#sortable1 *").show();
+        } else {
+          $('#myInput2').val(null);
+          $("#sortable2 *").show();
+        }
+      }
+
+      function save_text(){
+        $('#results_text').val(null);
+        var listItems = $("#results li");
+        for (let li of listItems) {
+            let product = $(li);
+            $('#results_text').val($('#results_text').val()+product[0].innerHTML+'\n');
+        }
+        $('#results_text').val($('#results_text').val().slice(0,-1))
+      }
+
+    </script>
+  </head>
+  <body>
+    <input type="text" id="myInput1" onkeyup="searchFunction1()" placeholder="Search..">
+    <button id="button1" onclick="reset(this)">X</button>
+    <input type="text" id="myInput2" onkeyup="searchFunction2()" placeholder="Search..">
+    <button id="button2" onclick="reset(this)">X</button>
+    <br>
+
+    <ul id="sortable1" class="connectedSortable">
+      {% for acct in data_supportedAcc %}
+        <li onclick="select(this)" class="ui-state-default" data-value="{{acct|replace('"','')}}">{{acct|replace('"','')}}</li>
+      {% endfor %}
+    </ul>
+
+    <div id="moveButtons">
+      <button onclick="moveRight()">></button><br>
+      <button onclick="moveLeft()"><</button><br><br>
+      <button onclick="moveRightAll()">>></button><br>
+      <button onclick="moveLeftAll()"><<</button>
+    </div>
+
+    <ul id="sortable2" class="connectedSortable">
+      {% for suppAcct in data_accSupported %}
+        <li onclick="select(this)" class="ui-state-default" data-value="{{suppAcct}}">{{suppAcct}}</li>
+      {% endfor %}
+    </ul>
+
+    <ul id="results" class="results">
+    </ul>
+
+    <form action="{{ url_for('saveAcctSupported') }}" method="POST">
+      <button onclick="save(),save_text()" type="submit">Save</button><br><br>
+      <br><br>
+      <input type="text" value="{{ID}}" name="squad_ID" id="squad_ID" style="display:none">
+      <textarea class="form-control form-control-sm" rows="8" name="results_text" id="results_text" style="display:none"></textarea>
+    </form>
+
+  </body>
+</html>

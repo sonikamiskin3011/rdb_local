@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  {% block head %}
+  {% endblock %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <!--
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/css/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
+  -->
+  <link rel="stylesheet" href="/static/downloaded/bootstrap.min.css" integrity="sha384-Smlep5jCw/wG7hdkwQ/Z5nLIefveQRIY9nfy6xoR1uRYBtpZgI6339F5dgvm/e9B"
+    crossorigin="anonymous">
+  <link rel="stylesheet" href="/static/downloaded/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU"
+    crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/static/stylesheets/default.css">
+  <link rel="stylesheet" type="text/css" href="/static/stylesheets/colors.css">
+  {% block stylesheet %}
+  {% endblock %}
+</head>
+
+<body>
+<header class="header">
+    <nav class="navbar navbar-light" style="background-color: #8acaf8;">
+        <div class="btnInNavBar">{{ buttons }}</div>
+        <div class="UserNavBar">{{ name }}</div>
+    </nav>
+</header>
+
+
+  <!-- {{ name }}
+  {{ buttons }} -->
+
+  {% block body %}
+  {% endblock %}
+  <!--
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+
+  -->
+  <script src="/static/downloaded/jquery-3.3.1.min.js"></script>
+  <script src="/static/downloaded/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  {% block jscript %}
+  {% endblock %}
+
+  <footer role="contentinfo" class="footer footer--fixed group -background-base" data-feature="page.footer">
+    <ul class='list-inline footer-list'>
+      <li class='list-inline-item footer-item'>
+        <a href="http://w3.ibm.com/w3/info_terms_of_use.html" target="_blank">Terms of Use</a>
+      </li>
+      <li class='list-inline-item footer-item'>
+        <a href="#">Privacy</a>
+      </li>
+      <li class='list-inline-item footer-item'>
+        <a href="#">Business Conduct Guidelines</a>
+      </li>
+      <li class='list-inline-item footer-item'>
+        <a href="#">Feedback</a>
+      </li>
+      <li class='list-inline-item footer-item'>
+        <a href="#">w3 Accessibility</a>
+      </li>
+      <li class='list-inline-item footer-item'>
+        <a href="#">w3 Community</a>
+      </li>
+
+      <li class="list-inline-item footer-item">
+        <em class="icon-awf-w3-logo-ibm"><span class="awf-access">IBM</span></em>
+      </li>
+    </ul>
+
+  </footer>
+</body>
+
+
+</html>

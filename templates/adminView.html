@@ -1,0 +1,148 @@
+{% extends "parent_bootstrap_js.html" %}
+
+<!-- {% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/views.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/form.css">
+{% endblock %} -->
+
+{% block head %}
+<title>Admin View</title>
+{% endblock %}
+
+{% block body %}
+<div class="background" id="disPlay"> <span class="fa fa-spinner fa-spin icon personal-style-spin"></span>  </div>
+<div class="pageCorrection">
+<form action="" method="post" >
+  <div style="text-align: left; " >
+    <h1>Admin View</h1>
+  </div>
+  <div id="admin-btn">
+    <button class="btn btn-primary" id="new-view" style="margin-left: 90%;">Create New View</button>
+  </div>
+  <table class="Admin_table">
+
+  </table>
+</form>
+<div class="modal-background" style="display: none;">
+  <!-- <div class="modal" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="formModalLabel" aria-hidden="true" style="background: rgba(0,0,0,.4);">
+    <div class="modal-dialog" style="max-width: 35%;" role="document"> -->
+      <div class="modal-content" style="background-color: #3b4b54" id="modal-personal-style">
+        <div class="modal-header" id="doc-view">
+          <h5 class="modal-title" id="formModalLabel">Edit view</h5>
+          <button type="button" class="close" data-dismiss="modal" action="close" aria-label="Close" style="margin-right: 1%; margin-top: -3%; font-size: 40px;">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="users-names" style="margin-top: 5%">
+              <label class="label-style-in-modal">User:</label>
+              <select id="user-show" name="for_user" class="get-value"><option></option></select>
+          </div>
+          <div class="view-source-block" style="margin-top: 5%">
+            <label class="label-style-in-modal">View Source:</label>
+            <select id="view-source" name="view_source" class="get-value"><option></option><option>live</option><option>archive</option></select>
+          </div>
+          <div class="view-name">
+              <label class="label-style-in-modal">View name:</label>
+              <input id="view-name-open" name="view_name" class="get-value" style="width: 15%;">
+          </div>
+          <div class="col-names-all margin-space">
+            <label class="label-style-in-modal">Column names:</label>
+            <form class="checkBox" style="width: calc(100% - 100px); display: inline-table;  border: 1px solid white;">
+              <div class="checkBox-position" name="col_names">
+                    <table id="Names" style="width: 100%;">
+
+                    </table>
+                    <div style="width: 0%">
+                        <table >
+                            <tr id="displayTable"></tr>
+                          </table>
+                    </div>
+
+                    <button class="btn btn-primary" id="sequence-modal" style="margin-left: 80%">Set Sequence</button>
+              </div>
+            </form>
+          </div>
+          <div class="col-group margin-space">
+            <label class="label-style-in-modal">SQL Filtering:</label>
+            <textarea id="view_filter" name="view_filter" maxlength="250" style='resize:both' placeholder='AREA = "Italy"'></textarea>
+        </div>
+          <div class="col-group margin-space">
+              <label class="label-style-in-modal">Column group:</label>
+            <select id="on-group" name="col_group" class="get-value"><option></option></select>
+          </div>
+          <div class="col-sum margin-space">
+              <label class="label-style-in-modal">Which Column sum:</label>
+              <form class="checkBox" style="width: 100%;max-width: 70%;display: inline-table;">
+                <div class="checkBox-position-sum" name="col_sum">
+
+                </div>
+              </form>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" action="close" data-dismiss="modal">Close</button>
+          <button type="button" name="save" model-button="changing" class="btn btn-primary" id="action">Save</button>
+        </div>
+      </div>
+    </div>
+    <!-- Second Modal START -->
+    <div class="modal-background-addition" style="display: none;">
+          <div class="modal-content-addition" style="background-color: #3b4b54">
+            <div class="modal-header-addition" style="border-bottom: 1px solid white; margin-bottom: 5%;">
+              <h5 class="modal-title-addition" id="little-formModalLabel">Set Sequence</h5>
+              <button type="button" class="close" data-dismiss="modal-addition" action="close-addition" aria-label="Close-addition" style="margin-top:-4%;">
+                <span aria-hidden="true">×</span>
+              </button>
+            </div>
+            <!--  -->
+            <div class="modal-body" style="min-height: 80%;">
+               <p class="info-block" >*Set Sequence: Drag and Drop method</p>
+              <div class="li-fileds" style="text-align: center; display: flex; min-height: 400px;">
+              <div class="Not-sorted" id="il-style">
+                  <div id="chosen-names">
+                  </div>
+               </div>
+                    <div class="btn-arrow-control">
+                      <div class="all-move" style="transform: translate(0, -150%);">
+                        <button class="fa btn btn-info fa-arrow-right" name="all-to-right" style="margin-bottom: 20%;"> All to the Right Side</button>
+                        <br>
+                        <button class="fa btn btn-info fa-arrow-left" name="all-to-left"> All to the Left Side</button>
+                      </div>
+                      <div class="one-move" style="transform: translate(0, -50%);">
+                        <button class="fa btn btn-info fa-arrow-right" name="to-right" style="margin-bottom: 20%;"> </button>
+                        <br>
+                        <button class="fa btn btn-info fa-arrow-left" name="to-left" > </button>
+                      </div>
+                    </div>
+                <div class="sorted" id="il-style">
+                    <div id="sorted-names">
+                    </div>
+                </div>
+              </div>
+            </div>
+            <!--  -->
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" action="close-addition" data-dismiss="modal-addition">Close</button>
+              <button type="button" name="save-addition" model-button="changing-addition" class="btn btn-primary" id="action-addition">Save</button>
+            </div>
+          </div>
+        </div>
+        <!--  Second Modal END  -->
+  </div>
+<!-- </div> -->
+
+{% endblock %}
+{% block footer %}
+{% endblock %}
+
+
+
+{% block jscript %}
+<script src="/static/js/adminView.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js"></script>
+{% endblock %}
+
+<style>
+
+</style>

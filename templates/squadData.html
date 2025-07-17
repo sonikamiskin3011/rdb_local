@@ -1,0 +1,72 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block head %}
+<title>Edit table data</title>
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/datatable.css">
+{% endblock %}
+
+{% block body %}
+
+<div style="margin-right: 2%; margin-left: 2%"  class="pageCorrection">
+    <form action="" method="post">
+      <div class="d-flex mb-3">
+        <h3>Squad Config Table</h3>
+        <div class="ml-auto row" style="padding-right:1%">
+          {% if buttonAccess == 1 %}<a href="/squadDataAccess" class="btn btn-warning float-right" style="margin-right:10px">Go to Squad Data Access</a>{% endif %}
+          <a href="/squadTable" class="btn btn-success float-right" style="margin-right:10px">+ Subdomain</a>
+          <a href="/massEditSquad" class="btn btn-info float-right" style="margin-right:10px">+ Update Multiple Records</a>
+          <a href="/addSquad" class="btn btn-primary float-right">+ Add New Item</a>
+        </div>
+      </div>
+      <hr>
+        <!-- Nav bar informations -->
+      <div class="tab-content" id="table-content">
+        <div class="table_container" style="min-height: 530px">
+          <table class="table table-bordered" id="squad_data_table" name="squad_data_table">
+            <col width="9%">
+            <col width="13%">
+            <col width="13%">
+            <col width="13%">
+            <col width="13%">
+            <col width="13%">
+            <col width="13%">
+            <col width="13%">
+            <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Tower</th>
+              <th scope="col">Subdomain</th>
+              <th scope="col">Squad Group</th>
+              <th scope="col">Squad Name</th>
+              <th scope="col">Squad Leader Name</th>
+              <th scope="col">Squad Leader Email</th>
+              <th scope="col"></th>
+            </tr>
+            </thead>
+            <tbody class="data-table">
+              {% for searchData in data_Search %}
+                <tr>
+                  <td>{{searchData[0]}}</td>
+                  <td>{{searchData[1]}}</td>
+                  <td>{{searchData[2]}}</td>
+                  <td>{{searchData[3]}}</td>
+                  <td>{{searchData[4]}}</td>
+                  <td>{{searchData[5]}}</td>
+                  <td>{{searchData[6]}}</td>
+                  <td><a href="/editSquadConfig/{{searchData[0]}}/" target="_blank"><button type="button" class="btn btn-primary" style="margin-right: 2%">Change</button></a><a href="/deleteSquadConfig/{{searchData[0]}}/"><button type="button" class="btn btn-danger">Delete</button></a></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+{% endblock %}
+
+{% block jscript %}
+<script src="/static/js/edit_select_tables.js" type="text/javascript"></script>
+<script src="/static/js/CustomTable.js" type="text/javascript"></script>
+{% endblock %}

@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <!-- <link rel="stylesheet" type="text/css" href="/css/colors.css"> -->
+    <!-- <link rel="stylesheet" type="text/css" href="/css/default.css"> -->
+    <title>Drag and Drop</title>
+    <script src="https://kit.fontawesome.com/6f217060a3.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style type="text/css">
+      body, html {
+        background-color: #3b4b54;
+        width : 100%;
+        height: 100%;
+        margin: 0 auto;
+        font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
+        color: #ffffff;
+        font-size: 0.85vw;
+        /*position: relative;*/
+        /* min-height:100%;
+          position:relative;
+        padding-bottom:[footer-height]; */
+
+      }
+
+
+      #sortable1, #sortable2 {
+        border: 0px solid #eee;
+        background: rgba(255, 255, 255, 0.3);
+        width: 300px;
+        height: 400px;
+        overflow-y: auto;
+        list-style-type: none;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+        color: black !important;
+      }
+      #moveButtons {
+        border: none;
+        width: 40px;
+        height: 400px;
+        list-style-type: none;
+        margin: 0;
+        margin-top: 10vw;
+        padding: 5px 0 0 0;
+        float: left;
+        /*margin-right: 10px;*/
+      }
+      #sortable1 li, #sortable2 li, #results li {
+        margin: 0 5px 5px 5px;
+        padding: 5px;
+        font-size: 12px;
+        width: auto;
+      }
+  /* #sortable1 li:hover, #sortable2 li:hover{
+      background-color: #f2f3f4;
+      } */
+      .ui-state-default{
+        border: 1px solid #eee;
+        background-color: white;
+      }
+      #results{
+        border: 1px solid #eee;
+        width: 300px;
+        height: 400px;
+        overflow-y: auto;
+        margin: 0;
+        padding: 5px 0 0 0;
+        float: left;
+        margin-right: 10px;
+        margin-left: 10px;
+        color: #fff !important;
+      }
+      .save{
+        width: 300px;
+        margin-left: 10px;
+      }
+      .selected{
+        background-color: #ccd1d1;
+      }
+      /*#myInput2{
+        margin-left: 56px;
+      }*/
+      .btn1{
+        margin-bottom: 4px;
+      }
+      .wrapper{
+        display: flex;
+        align-items: center;
+        justify-content: center
+        /*margin-left: 2vw;
+        margin-top: 2vw;*/
+      }
+      li {
+        cursor: pointer;
+      }
+      input{
+        width: 276px;
+      }
+    </style>
+    <script>
+      // function to save/print out the results
+      function save(){
+        $("#results li").remove();
+
+        var items = []
+        $('#sortable2 li').each(function (index, value) {
+          let item = {};
+          item.value = $(value).data('value');
+          items.push(item);
+        });
+
+        $.each(items, function (index, value) {
+          $("#results").append('<li>' + Object.values(value)+ '</li>');
+        });
+      }
+
+      function moveAll(src, dest){
+        $(src).children().appendTo(dest);
+      }
+
+      function moveRightAll(){
+        moveAll('#sortable1', '#sortable2');
+      }
+
+      function moveLeftAll(){
+        moveAll('#sortable2', '#sortable1');
+      }
+
+      // this function selects an item
+      function select(item){
+        $(item).toggleClass('selected');
+      }
+
+      function moveRight(){
+        selected = document.getElementsByClassName('selected');
+        if($(selected).parent().attr('id') == 'sortable1'){
+          $(selected).detach().appendTo('#sortable2');
+        }
+        $(selected).removeClass('selected');
+      }
+
+      function moveLeft(){
+        selected = document.getElementsByClassName('selected');
+        if($(selected).parent().attr('id') == 'sortable2'){
+          $(selected).detach().appendTo('#sortable1');
+        }
+        $(selected).removeClass('selected');
+      }
+
+      function searchFunction1() {
+          var input, value;
+          input = document.getElementById("myInput1");
+          value = input.value.toLowerCase().trim();
+          $("#sortable1 *").show().filter(function(){
+            return $(this).text().toLowerCase().trim().indexOf(value) == -1;
+          }).hide();
+      }
+
+      function searchFunction2() {
+          var input, value;
+          input = document.getElementById("myInput2");
+          value = input.value.toLowerCase().trim();
+          $("#sortable2 *").show().filter(function(){
+            return $(this).text().toLowerCase().trim().indexOf(value) == -1;
+          }).hide();
+      }
+
+      // this function clears the content of the input field upon clicking the 'X' button
+      function reset(field){
+        var listId;
+        listId = $(field).attr('id')
+        if (listId == "button1"){
+          $('#myInput1').val(null);
+          $("#sortable1 *").show();
+        } else {
+          $('#myInput2').val(null);
+          $("#sortable2 *").show();
+        }
+      }
+
+      function save_text(){
+        $('#results_text').val(null);
+        var listItems = $("#results li");
+        for (let li of listItems) {
+            let product = $(li);
+            $('#results_text').val($('#results_text').val()+product[0].innerHTML+'\n');
+        }
+        $('#results_text').val($('#results_text').val().slice(0,-1))
+      }
+
+    </script>
+  </head>
+  <body>
+    <div class="row wrapper">
+      <div>
+        <div class="input-group mb-3">
+          <input type="text" id="myInput1" onkeyup="searchFunction1()" placeholder="Search..">
+          <div class="input-group-append">
+            <button id="button1" onclick="reset(this)" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+        <ul id="sortable1" class="connectedSortable">
+          {% for acct in data_supportedAcc %}
+            <li onclick="select(this)" class="ui-state-default" data-value="{{acct|replace("('","")|replace("',)","")|replace('("','')|replace('",)','')|replace("'","''")}}">{{acct|replace("('","")|replace("',)","")|replace('("','')|replace('",)','')}}</li>
+          {% endfor %}
+        </ul>
+      </div>
+
+      <div id="moveButtons" style="margin-left:20px; margin-right:20px;">
+        <button onclick="moveRight()" type="button" class="btn btn-outline-light btn1"><i class="fas fa-lg fa-angle-right"></i></button><br>
+        <button onclick="moveLeft()" type="button" class="btn btn-outline-light"><i class="fas fa-lg fa-angle-left"></i></button><br><br>
+        <button onclick="moveRightAll()" type="button" class="btn btn-outline-light btn1"><i class="fas fa-lg fa-angle-double-right"></i></button><br>
+        <button onclick="moveLeftAll()" type="button" class="btn btn-outline-light"><i class="fas fa-lg fa-angle-double-left"></i></button>
+      </div>
+
+      <div>
+        <div class="input-group mb-3">
+          <input type="text" id="myInput2" onkeyup="searchFunction2()" placeholder="Search..">
+          <div class="input-group-append">
+            <button id="button2" onclick="reset(this)" type="button" class="btn btn-danger"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+
+
+
+        <ul id="sortable2" class="connectedSortable">
+          {% for suppAcct in data_accSupported %}
+            <li onclick="select(this)" class="ui-state-default" data-value="{{suppAcct|replace("('","")|replace("',)","")|replace('("','')|replace('",)','')|replace("'","''")}}">{{suppAcct|replace("('","")|replace("',)","")|replace('("','')|replace('",)','')|replace("&amp;","&")}}</li>
+          {% endfor %}
+        </ul>
+
+      </div>
+
+      <form action="{{ url_for('saveAcctSupported') }}" method="POST">
+        <div>
+          <div class="mb-3">
+            <button onclick="save(),save_text()" type="submit" class="btn btn-primary btn-block save">Save</button>
+          </div>
+
+          <ul id="results" class="results"></ul>
+          <input type="text" value="{{ID}}" name="squad_ID" id="squad_ID" style="display:none">
+          <textarea class="form-control form-control-sm" rows="8" name="results_text" id="results_text" style="display:none"></textarea>
+
+        </div>
+      </form>
+
+      <!-- <div>
+        <br><br><br><button onclick="save()" type="button" class="btn btn-primary">Save</button>
+      </div> -->
+
+    </div>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+.under-table{
+    float: right;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding: 2px 20px;
+    font-size: 1.5em;
+}
+
+.inner-width{
+    width: 100%;
+    max-width: 30%;
+}
+
+.inner-label-width{
+    width: 15%;
+    font-size: 1.2em;
+}
+
+.text-field-width{
+    width: 25.8%;
+}
+
+.text-field-width2{
+    width: 40%;
+}

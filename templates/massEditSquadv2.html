@@ -1,0 +1,138 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block head %}
+<title>Form data enter</title>
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/form.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/squadConfig.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/massEditSquad.css">
+{% endblock %}
+
+{% block body %}
+<!-- v2 for massEditSquad.html. This version removes most of the fields, as requested -->
+
+
+<div class="pageCorrection">
+  <form action="{{ url_for('saveMassEditSquad') }}" method="POST">
+    <!-- Buttons above the border -->
+    <div class="row" style="padding: 1%;">
+      <a href="/squadData"><button type="button" class="btn btn-primary" style="margin-right:5px">Exit</button></a>
+      <!--button type="button" class="btn btn-info" onClick="showNewValues()" id="btnConfirm" disabled>Confirm Filters</button-->
+      <button type="button" class="btn btn-primary" id="btnMassSave" onClick="loadConfirmIFrame()" data-toggle="modal" data-target="#confirmModal">Save</button>
+    </div>
+
+    <!-- Border content -->
+    <div class="encapsulate">
+      <!-- First section -->
+      <div>
+        <h2>Squad Update: From</h2>
+        <div name="squadFilters">
+          <div class="encapsulate">
+            <label class="inner-label-width">Tower</label>
+            <select class="inner-width exempt-select" id="towerFilter" name="towerFilter" onChange="towerRelationshipFilter();confirmFilter();">
+              <option disabled selected value=""> -- Select Tower -- </option>
+              {% for tower_data in data_TowerFilter %}
+                <option value="{{tower_data|replace("('", "")|replace("',)", "")}}">{{tower_data|replace("('", "")|replace("',)", "")}}</option>
+              {% endfor %}
+            </select>
+            <br>
+            <label class="inner-label-width">Subdomain</label>
+            <select class="inner-width exempt-select" id="subdomainFilter" name="subdomainFilter"></select>
+            <br>
+          </div>
+        </div>
+
+        <br>
+
+        <h2 id="squadValuesLabel" style="display:block">Squad Update: To</h2>
+        <div id="squadValues" name="squadValues" style="display:block">
+          <div class="encapsulate">
+            <label class="inner-label-width">Tower</label>
+            <select class="inner-width exempt-select" id="tower" name="tower" onChange="towerRelationship()">
+              <option selected value="None">No Changes</option>
+              {% for tower_data in data_Tower %}
+                <option value="{{tower_data|replace("('", "")|replace("',)", "")}}">{{tower_data|replace("('", "")|replace("',)", "")}}</option>
+              {% endfor %}
+            </select>
+            <br>
+            <label class="inner-label-width">Subdomain</label>
+            <select class="inner-width exempt-select" id="subdomain" name="subdomain">
+              <option selected value="None">No Changes</option>
+            </select>
+            <br>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- confirmModal -->
+    <div class="modal" id="confirmModal">
+      <div class="modal-dialog">
+        <div class="modal-content" style="background-color:#3b4b54">
+          <div class="modal-header">
+            <h4 class="modal-title">Please Confirm</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <iframe id='ifrConfirm' src="" height="100%" width="100%"></iframe>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Yes</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">No</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+  </form>
+</div>
+
+
+
+{% endblock %}
+
+{% block jscript %}
+<script src="/static/js/form/massEditSquad.js" type="text/javascript"></script>
+<script src="/static/js/form/searchContract.js" type="text/javascript"></script>
+<script>
+  function towerRelationship() {
+    var series = [
+      {% for towerRel in data_TowerSubdomain %}
+        {tower: "{{towerRel[0]}}", subdom: "{{towerRel[1]}}"},
+      {% endfor %}
+      {tower: "", subdom: ""}
+    ]
+    var tower = $("#tower").val();
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.tower == tower){
+        options += "<option value='" + value.subdom + "'>" + value.subdom + "</option>";
+      }
+    });
+    $("#subdomain").html(options);
+  }
+
+  function towerRelationshipFilter() {
+    var series = [
+      {% for towerRel in data_TowerSubdomainFilter %}
+        {tower: "{{towerRel[0]}}", subdom: "{{towerRel[1]}}"},
+      {% endfor %}
+      {tower: "", subdom: ""}
+    ]
+    var tower = $("#towerFilter").val();
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.tower == tower){
+        options += "<option value='" + value.subdom + "'>" + value.subdom + "</option>";
+      }
+    });
+    $("#subdomainFilter").html(options);
+  }
+
+</script>
+{% endblock %}

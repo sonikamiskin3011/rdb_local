@@ -1,0 +1,72 @@
+#sortable1, #sortable2 {
+  border: 0px solid #eee;
+  background: rgba(255, 255, 255, 0.3);
+  width: 300px;
+  height: 400px;
+  overflow-y: auto;
+  list-style-type: none;
+  margin: 0;
+  padding: 5px 0 0 0;
+  float: left;
+  margin-right: 10px;
+  color: black !important;
+}
+#moveButtons {
+  border: none;
+  width: 40px;
+  height: 400px;
+  list-style-type: none;
+  margin: 0;
+  margin-top: 10vw;
+  padding: 5px 0 0 0;
+  float: left;
+  /*margin-right: 10px;*/
+}
+#sortable1 li, #sortable2 li, #results li {
+  margin: 0 5px 5px 5px;
+  padding: 5px;
+  font-size: 12px;
+  width: auto;
+}
+/* #sortable1 li:hover, #sortable2 li:hover{
+background-color: #f2f3f4;
+} */
+.ui-state-default{
+  border: 1px solid #eee;
+  background-color: white;
+}
+#results{
+  border: 1px solid #eee;
+  width: 300px;
+  height: 400px;
+  overflow-y: auto;
+  margin: 0;
+  padding: 5px 0 0 0;
+  float: left;
+  margin-right: 10px;
+  margin-left: 10px;
+  color: #fff !important;
+}
+.save{
+  width: 300px;
+  margin-left: 10px;
+}
+.selected{
+  background-color: #ccd1d1;
+}
+/*#myInput2{
+  margin-left: 56px;
+}*/
+.btn1{
+  margin-bottom: 4px;
+}
+.wrapper{
+  display: flex;
+  align-items: center;
+  justify-content: center
+  /*margin-left: 2vw;
+  margin-top: 2vw;*/
+}
+li {
+  cursor: pointer;
+}

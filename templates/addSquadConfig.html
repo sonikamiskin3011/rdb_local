@@ -1,0 +1,206 @@
+{% extends "parent_bootstrap_js.html" %}
+
+{% block head %}
+<title>Form data enter</title>
+{% endblock %}
+
+{% block stylesheet %}
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/form.css">
+<link rel="stylesheet" type="text/css" href="/static/stylesheets/squadConfig.css">
+{% endblock %}
+
+{% block body %}
+<div class="background loading-anim" id="disPlay2"> <span class="fa fa-spinner fa-spin icon personal-style-spin"></span> </div>
+<!-- div for margin -->
+<!--div class="background" id="disPlay" style="display: none;"> <span class="fa fa-spinner fa-spin icon personal-style-spin"></span>
+</div-->
+
+<div class="pageCorrection">
+  <form action="{{ url_for('saveSquadConfig') }}" method="POST">
+    <input class="inner-width" type="text" id="saveType" name="saveType" value="Add" style="display:none">
+    <!-- Buttons above the border -->
+    <div style="padding: 1%;">
+      <a href="/exitAddSquadData/{{data_SquadConfig[0][0]}}"><button type="button" class="btn btn-primary">Exit without Saving</button></a>
+      <button type="submit" class="btn btn-primary saveBtn">Save & Exit</button>
+    </div>
+    <!-- Border content -->
+    <div class="encapsulate">
+      <!-- First section -->
+      <div>
+        <h2>Squad Configuration</h2>
+        <div class="encapsulate">
+
+          <div name="not-hide">
+
+            <label class="inner-label-width">Tower</label>
+            <select class="inner-width exempt-select" id="tower" name="tower" onChange="clearRel();towerRelationship();subdomRelationship();checkMandatory()">
+              <!-- <option disabled selected value=""> -- Select Tower -- </option> -->
+              <option value="{{data_SquadConfig[0][1]}}" selected>{{data_SquadConfig[0][1]}}</option>
+              {% for tower_data in data_Tower %}
+                <option value="{{tower_data|replace("('", "")|replace("',)", "")}}" {% if data_SquadConfig[0][1] == tower_data|replace("('", "")|replace("',)", "") %}selected{% endif %}>{{tower_data|replace("('", "")|replace("',)", "")}}</option>
+              {% endfor %}
+            </select>
+
+            <label class="inner-label-width" style="margin-left: 2em;">ID</label>
+            <input class="inner-width" type="text" id="squad_id" name="squad_id" value="{{data_SquadConfig[0][0]}}" readonly>
+
+            <br>
+
+            <label class="inner-label-width">Subdomain</label>
+            <select class="inner-width exempt-select" id="subdomain" name="subdomain" onChange="subdomRelationship();checkMandatory()">
+              <!--data_SquadConfig[0][2]-->
+              <option value="{{data_SquadConfig[0][2]}}" selected>{{data_SquadConfig[0][2]}}</option>
+            </select>
+
+            <br>
+
+            <label class="inner-label-width">Squad Group</label>
+            <!--input class="inner-width" type="text" id="squad_group" name="squad_group" value="{{data_SquadConfig[0][3]}}"-->
+            <select class="inner-width exempt-select" id="squad_group" name="squad_group" onChange="checkMandatory()">
+              <!--data_SquadConfig[0][3]-->
+              <option value="{{data_SquadConfig[0][3]}}" selected>{{data_SquadConfig[0][3]}}</option>
+            </select>
+
+            <label class="inner-label-width" style="margin-left: 2em;">Squad Name</label>
+            <input class="inner-width" type="text" id="squad_name" name="squad_name" value="{{data_SquadConfig[0][4]}}" onkeyup="checkMandatory()" onchange="checkMandatory()">
+
+            <br>
+
+            <label class="inner-label-width">Client Driven</label>
+            <select class="inner-width exempt-select" id="is_client_driven" name="is_client_driven" onChange="checkClientDriven()">
+              <option value="1" {% if data_SquadConfig[0][5]|string() == '1' %}selected{% endif %}>Yes</option>
+              <option value="0" {% if data_SquadConfig[0][5]|string() == '0' or data_SquadConfig[0][5]|string == '' or data_SquadConfig[0][5] is none %}selected{% endif %}>No</option>
+            </select>
+
+
+            <br><br>
+
+            <label class="inner-label-width">Accounts Supported</label>
+            <button type="button" class="btn btn-primary inner-width" id="accounts_supported" name="accounts_supported" data-toggle="modal" data-target="#accSupported">Choose</button>
+
+            <label class="inner-label-width" style="margin-left: 2em;">Service Provided</label>
+            <input class="inner-width" type="text"  id="service_provided" name="service_provided" value="{{data_SquadConfig[0][6]}}">
+
+            <br><br>
+
+            <label class="inner-label-width">Iteration Manager Email</label>
+            <input class="inner-width" type="text"  id="iter_manager_email" name="iter_manager_email" value="{{data_SquadConfig[0][7]}}">
+
+            <label class="inner-label-width" style="margin-left: 2em;">Iteration Manager Name</label>
+            <input class="inner-width" type="text"  id="iter_manager_notes_id" name="iter_manager_notes_id" value="{{data_SquadConfig[0][8]}}" readonly>
+
+            <br>
+
+            <label class="inner-label-width">Product Owner Email</label>
+            <input class="inner-width" type="text"  id="prod_owner_email" name="prod_owner_email" value="{{data_SquadConfig[0][9]}}">
+
+
+            <label class="inner-label-width" style="margin-left: 2em;">Product Owner Name</label>
+            <input class="inner-width" type="text"  id="prod_owner_notes_id" name="prod_owner_notes_id" value="{{data_SquadConfig[0][10]}}" readonly>
+
+            <br>
+
+            <label class="inner-label-width">Squad Leader Email</label>
+            <input class="inner-width" type="text"  id="squad_lead_email" name="squad_lead_email" value="{{data_SquadConfig[0][11]}}">
+
+            <label class="inner-label-width" style="margin-left: 2em;">Squad Leader Name</label>
+            <input class="inner-width" type="text"  id="squad_lead_notes_id" name="squad_lead_notes_id" value="{{data_SquadConfig[0][12]}}" readonly>
+
+            <br>
+
+            <button class="btn btn-primary" type="button" onclick="testEmail()">Confirm Emails</button>
+
+          </div>
+        </div>
+
+
+      </div>
+      <br>
+    </div>
+  </form>
+</div>
+
+<div class="modal" id="accSupported">
+  <div class="modal-dialog modal-lg w-75" style="max-width:1200px">
+    <div class="modal-content" style="background-color: #3b4b54">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">Accounts Supported</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body" style="height:70vh">
+         <iframe src="/squadAcctSupported/{{data_SquadConfig[0][0]}}" id="iFrameAccSupp" name="iFrameAccSupp" height="100%" width="100%"></iframe>
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block jscript %}
+<script src="/static/js/form/FormFunctionality.js" type="text/javascript"></script>
+<script src="/static/js/form/time_form.js" type="text/javascript"></script>
+<script src="/static/js/form/bp.js" type="text/javascript"></script>
+<script src="/static/js/form/squadConfig.js" type="text/javascript"></script>
+<script src="/static/js/form/searchContract.js" type="text/javascript"></script>
+<script>
+
+  $(document).ready(function() {
+    initValueEditSquad();
+  });
+
+  function towerRelationship() {
+    var series = [
+      {% for towerRel in data_TowerSubdomain %}
+        {tower: "{{towerRel[0]}}", subdom: "{{towerRel[1]}}"},
+      {% endfor %}
+      {tower: "", subdom: ""}
+    ]
+    var tower = $("#tower").val().replace('&','&amp;');
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.tower == tower){
+        options += "<option value='" + value.subdom + "'>" + value.subdom + "</option>";
+      }
+    });
+    $("#subdomain").html(options);
+  }
+
+  function subdomRelationship() {
+    var series = [
+      {% for subdomRel in data_SubdomainTribe %}
+        {subdom: "{{subdomRel[0]}}", tribe: "{{subdomRel[1]}}"},
+      {% endfor %}
+      {subdom: "", tribe: ""}
+    ]
+    var subDomain = $("#subdomain").val().replace('&','&amp;');
+    var options =  "";
+    $(series).each(function(index, value){
+      if(value.subdom == subDomain){
+        options += "<option value='" + value.tribe + "'>" + value.tribe + "</option>";
+      }
+    });
+
+    $("#squad_group").html(options);
+  }
+
+  function initValueEditSquad(){
+    towerRelationship();
+    $("#subdomain").val("{{data_SquadConfig[0][2]}}");
+    subdomRelationship();
+    $("#squad_group").val("{{data_SquadConfig[0][3]}}");
+  }
+
+  function clearRel() {
+    var options =  "";
+    $("#subdomain").html(options);
+    $("#squad_group").html(options);
+  }
+
+</script>
+{% endblock %}
